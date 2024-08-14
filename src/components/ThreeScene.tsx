@@ -1,4 +1,4 @@
-import React, { useRef, useEffect } from 'react'
+import React, { useRef } from 'react'
 import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import { useDrag } from '@use-gesture/react'
 import * as THREE from 'three'
@@ -19,8 +19,10 @@ const randomSphereSurfacePosition = (radius: number) => {
 // 텍스트가 카메라를 바라보도록 설정하는 컴포넌트
 const TextWithCameraOrientation = ({
   position,
+  text,
 }: {
   position: [number, number, number]
+  text: string
 }) => {
   const textRef = useRef<THREE.Mesh>(null)
   const { camera } = useThree()
@@ -36,16 +38,12 @@ const TextWithCameraOrientation = ({
     <Text
       ref={textRef}
       position={position}
-      fontSize={0.2}
+      fontSize={0.15}
       color="white"
       anchorX="center"
       anchorY="middle"
     >
-      {
-        ['Afghanistan', 'Albania', 'Algeria', 'Andorra', 'Angola'][
-          Math.floor(Math.random() * 5)
-        ]
-      }
+      {text}
     </Text>
   )
 }
@@ -66,6 +64,24 @@ const Sphere = () => {
     }
   })
 
+  const countries = [
+    '대한민국',
+    '일본',
+    '중국',
+    '미국',
+    '캐나다',
+    '호주',
+    '영국',
+    '프랑스',
+    '독일',
+    '이탈리아',
+    '스페인',
+    '브라질',
+    '멕시코',
+    '인도',
+    '러시아',
+  ]
+
   return (
     <mesh ref={meshRef} {...bind()}>
       <sphereGeometry args={[2, 32, 32]} />
@@ -77,34 +93,11 @@ const Sphere = () => {
         depthWrite={false}
         depthTest={false}
       />
-      {[
-        'Afghanistan',
-        'Albania',
-        'Algeria',
-        'Andorra',
-        'Angola',
-        'Antigua and Barbuda',
-        'Argentina',
-        'Armenia',
-        'Australia',
-        'Austria',
-        'Azerbaijan',
-        'Bahamas',
-        'Bahrain',
-        'Bangladesh',
-        'Barbados',
-        'Belarus',
-        'Belgium',
-        'Belize',
-        'Benin',
-        'Bhutan',
-        'Bolivia',
-        'Bosnia and Herzegovina',
-        'Botswana',
-      ].map((_, index) => (
+      {countries.map((country, index) => (
         <TextWithCameraOrientation
           key={index}
           position={randomSphereSurfacePosition(2)}
+          text={country}
         />
       ))}
     </mesh>
