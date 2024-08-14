@@ -51,7 +51,7 @@ const TextWithCameraOrientation = ({
       ref={textRef}
       position={position}
       fontSize={isHovered ? 0.2 : 0.15} // 마우스 오버 시 글자 크기 변경
-      color={isHovered ? 'red' : 'white'} // 마우스 오버 시 색상 변경
+      color={isHovered ? 'white' : 'gray'} // 마우스 오버 시 색상 변경
       anchorX="center"
       anchorY="middle"
       onPointerOver={onPointerOver}
@@ -125,7 +125,7 @@ const Sphere = () => {
     <mesh ref={meshRef} {...bind()}>
       <sphereGeometry args={[2, 32, 32]} />
       <meshStandardMaterial
-        color="white"
+        color="lightgray"
         transparent={true}
         opacity={0}
         side={THREE.DoubleSide}
