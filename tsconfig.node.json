@@ -6,7 +6,7 @@
     "skipLibCheck": true,
 
     /* Bundler mode */
-    "moduleResolution": "bundler",
+    "moduleResolution": "node", // 'bundler'에서 'node'로 변경
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "moduleDetection": "force",
