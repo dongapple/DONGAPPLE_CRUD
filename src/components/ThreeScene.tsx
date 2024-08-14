@@ -29,12 +29,14 @@ const TextWithCameraOrientation = ({
   isHovered,
   onPointerOver,
   onPointerOut,
+  onClick,
 }: {
   position: [number, number, number]
   text: string
   isHovered: boolean
   onPointerOver: () => void
   onPointerOut: () => void
+  onClick: () => void
 }) => {
   const textRef = useRef<THREE.Mesh>(null)
   const { camera } = useThree()
@@ -56,6 +58,7 @@ const TextWithCameraOrientation = ({
       anchorY="middle"
       onPointerOver={onPointerOver}
       onPointerOut={onPointerOut}
+      onClick={onClick} // 클릭 이벤트 핸들러 추가
     >
       {text}
     </Text>
@@ -63,7 +66,11 @@ const TextWithCameraOrientation = ({
 }
 
 // 구체 컴포넌트
-const Sphere = () => {
+const Sphere = ({
+  setSelectedText,
+}: {
+  setSelectedText: (text: string) => void
+}) => {
   const meshRef = useRef<THREE.Mesh>(null)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
@@ -109,13 +116,35 @@ const Sphere = () => {
     '영국',
     '프랑스',
     '독일',
-    '동혁',
     '스페인',
     '브라질',
     '멕시코',
     '인도',
     '러시아',
-    '오카모토',
+    '이탈리아',
+    '네덜란드',
+    '스웨덴',
+    '벨기에',
+    '스위스',
+    '터키',
+    '남아프리카공화국',
+    '아르헨티나',
+    '칠레',
+    '콜롬비아',
+    '페루',
+    '말레이시아',
+    '싱가포르',
+    '태국',
+    '베트남',
+    '필리핀',
+    '이스라엘',
+    '사우디아라비아',
+    '아랍에미리트',
+    '이란',
+    '레바논',
+    '이집트',
+    '모로코',
+    '알제리',
   ]
 
   // 균일하게 분포된 점을 사용
@@ -140,6 +169,7 @@ const Sphere = () => {
           isHovered={hoveredIndex === index}
           onPointerOver={() => setHoveredIndex(index)}
           onPointerOut={() => setHoveredIndex(null)}
+          onClick={() => setSelectedText(country)} // 클릭 시 텍스트 설정
         />
       ))}
     </mesh>
@@ -148,13 +178,18 @@ const Sphere = () => {
 
 // 메인 씬 컴포넌트
 const ThreeScene = () => {
+  const [selectedText, setSelectedText] = useState<string>('')
+
   return (
     <div style={{ height: '100vh', backgroundColor: 'black' }}>
       <Canvas>
         <ambientLight />
         <pointLight position={[10, 10, 10]} />
-        <Sphere />
+        <Sphere setSelectedText={setSelectedText} />
       </Canvas>
+      <h1 style={{ color: 'white', textAlign: 'center', marginTop: '-200px' }}>
+        {selectedText}
+      </h1>
     </div>
   )
 }
