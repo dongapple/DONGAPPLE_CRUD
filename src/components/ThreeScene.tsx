@@ -1,4 +1,4 @@
-import React, { useRef } from 'react'
+import React, { useRef, useState } from 'react'
 import { Canvas, useThree, useFrame } from '@react-three/fiber'
 import { useDrag } from '@use-gesture/react'
 import * as THREE from 'three'
@@ -26,9 +26,15 @@ const fibonacciSphere = (
 const TextWithCameraOrientation = ({
   position,
   text,
+  isHovered,
+  onPointerOver,
+  onPointerOut,
 }: {
   position: [number, number, number]
   text: string
+  isHovered: boolean
+  onPointerOver: () => void
+  onPointerOut: () => void
 }) => {
   const textRef = useRef<THREE.Mesh>(null)
   const { camera } = useThree()
@@ -44,10 +50,12 @@ const TextWithCameraOrientation = ({
     <Text
       ref={textRef}
       position={position}
-      fontSize={0.15}
-      color="white"
+      fontSize={isHovered ? 0.2 : 0.15} // 마우스 오버 시 글자 크기 변경
+      color={isHovered ? 'red' : 'white'} // 마우스 오버 시 색상 변경
       anchorX="center"
       anchorY="middle"
+      onPointerOver={onPointerOver}
+      onPointerOut={onPointerOut}
     >
       {text}
     </Text>
@@ -57,6 +65,7 @@ const TextWithCameraOrientation = ({
 // 구체 컴포넌트
 const Sphere = () => {
   const meshRef = useRef<THREE.Mesh>(null)
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
 
   // 드래그 이벤트 핸들러
   const bind = useDrag((state) => {
@@ -66,7 +75,7 @@ const Sphere = () => {
         memo = { startQuaternion: meshRef.current.quaternion.clone() }, // 초기 쿼터니온 상태 저장
       } = state
 
-      const rotationSpeed = 0.00005 // 드래그 속도 조절
+      const rotationSpeed = 0.00008 // 드래그 속도 조절
 
       // 드래그 방향에 따라 회전
       const delta = new THREE.Vector2(dx, -dy)
@@ -109,7 +118,7 @@ const Sphere = () => {
     '오카모토',
   ]
 
-  // 랜덤 점 대신 균일하게 분포된 점을 사용
+  // 균일하게 분포된 점을 사용
   const positions = fibonacciSphere(countries.length)
 
   return (
@@ -128,6 +137,9 @@ const Sphere = () => {
           key={index}
           position={positions[index]}
           text={country}
+          isHovered={hoveredIndex === index}
+          onPointerOver={() => setHoveredIndex(index)}
+          onPointerOut={() => setHoveredIndex(null)}
         />
       ))}
     </mesh>
