@@ -5,12 +5,14 @@
     "lib": ["ES2020", "DOM", "DOM.Iterable"],
     "module": "ESNext",
     "skipLibCheck": true,
-    "moduleResolution": "bundler",
+    "moduleResolution": "node",
     "allowImportingTsExtensions": true,
     "isolatedModules": true,
     "noEmit": true,
     "jsx": "react-jsx",
-    "strict": true
+    "strict": true,
+    "esModuleInterop": true, // CommonJS 모듈 호환성
+    "allowSyntheticDefaultImports": true // 기본 가져오기 허용
   },
   "include": ["src"],
   "exclude": ["node_modules"]
