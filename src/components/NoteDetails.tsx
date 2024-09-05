@@ -1,3 +1,4 @@
+// NoteDetails.tsx
 import React, { useState, useEffect } from 'react'
 import { Note } from './../contexts/NoteTypes'
 
@@ -25,7 +26,9 @@ const NoteDetails: React.FC<NoteDetailsProps> = ({ note, onSave }) => {
         ...note,
         title,
         content,
-        createdAt: note.createdAt,
+        // ID가 없으면 새 ID를 생성하거나 기본값을 설정
+        id: note.id || Date.now(), // 또는 UUID를 사용할 수 있습니다.
+        createdAt: note.createdAt || new Date().toISOString(),
       }
 
       onSave(updatedNote)

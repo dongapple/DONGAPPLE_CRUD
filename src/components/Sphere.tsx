@@ -1,9 +1,9 @@
-// Sphere.tsx
 import React, { useRef, useState } from 'react'
 import { useThree, useFrame } from '@react-three/fiber'
 import { useDrag } from '@use-gesture/react'
 import * as THREE from 'three'
 import { Text } from '@react-three/drei'
+import { Note } from './../contexts/NoteTypes'
 
 // Golden Spiral 또는 Fibonacci Sphere를 이용한 균등한 점 배치 함수
 const fibonacciSphere = (
@@ -68,9 +68,11 @@ const TextWithCameraOrientation = ({
 
 // 구체 컴포넌트
 const Sphere = ({
-  setSelectedText,
+  notes,
+  setSelectedNote,
 }: {
-  setSelectedText: (text: string) => void
+  notes: Note[] // props로 notes 배열 추가
+  setSelectedNote: (note: Note) => void
 }) => {
   const meshRef = useRef<THREE.Mesh>(null)
   const [hoveredIndex, setHoveredIndex] = useState<number | null>(null)
@@ -107,49 +109,8 @@ const Sphere = ({
     }
   })
 
-  const countries = [
-    '대한민국',
-    '일본',
-    '중국',
-    '미국',
-    '캐나다',
-    '호주',
-    '영국',
-    '프랑스',
-    '독일',
-    '스페인',
-    '브라질',
-    '멕시코',
-    '인도',
-    '러시아',
-    '이탈리아',
-    '네덜란드',
-    '스웨덴',
-    '벨기에',
-    '스위스',
-    '터키',
-    '남아프리카공화국',
-    '아르헨티나',
-    '칠레',
-    '콜롬비아',
-    '페루',
-    '말레이시아',
-    '싱가포르',
-    '태국',
-    '베트남',
-    '필리핀',
-    '이스라엘',
-    '사우디아라비아',
-    '아랍에미리트',
-    '이란',
-    '레바논',
-    '이집트',
-    '모로코',
-    '알제리',
-  ]
-
   // 균일하게 분포된 점을 사용
-  const positions = fibonacciSphere(countries.length)
+  const positions = fibonacciSphere(notes.length)
 
   return (
     <mesh ref={meshRef} {...bind()}>
@@ -162,15 +123,15 @@ const Sphere = ({
         depthWrite={false}
         depthTest={false}
       />
-      {countries.map((country, index) => (
+      {notes.map((note, index) => (
         <TextWithCameraOrientation
-          key={index}
+          key={note.id}
           position={positions[index]}
-          text={country}
+          text={note.title}
           isHovered={hoveredIndex === index}
           onPointerOver={() => setHoveredIndex(index)}
           onPointerOut={() => setHoveredIndex(null)}
-          onClick={() => setSelectedText(country)} // 클릭 시 텍스트 설정
+          onClick={() => setSelectedNote(note)} // 클릭 시 선택된 노트 설정
         />
       ))}
     </mesh>

@@ -1,17 +1,21 @@
+// Panel.tsx
 import React from 'react'
 import NotesList from './NotesList'
 import NoteDetails from './NoteDetails'
 import Login from './Login'
 import { useAuth } from './../contexts/Auth'
+import { Note } from './../contexts/NoteTypes'
 
 interface PanelProps {
-  setNotes: (notes: any[]) => void
-  selectedNote: any
-  setSelectedNote: (note: any) => void
-  onSave: (updatedNote: any) => void
+  notes: Note[]
+  setNotes: (notes: Note[]) => void
+  selectedNote: Note | null
+  setSelectedNote: (note: Note | null) => void
+  onSave: (updatedNote: Note) => void
 }
 
 const Panel: React.FC<PanelProps> = ({
+  notes,
   setNotes,
   selectedNote,
   setSelectedNote,
@@ -41,7 +45,7 @@ const Panel: React.FC<PanelProps> = ({
             <NoteDetails note={selectedNote} onSave={onSave} />
           ) : (
             <NotesList
-              notes={[]} // 노트 목록을 상위 컴포넌트에서 전달 받아야 합니다.
+              notes={notes}
               onNoteClick={setSelectedNote}
               onNewNoteClick={() =>
                 setSelectedNote({ id: null, title: '', content: '' })

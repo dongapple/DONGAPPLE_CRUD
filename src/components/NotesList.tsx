@@ -1,9 +1,6 @@
+// NotesList.tsx
 import React from 'react'
-
-interface Note {
-  id: number
-  title: string
-}
+import { Note } from './../contexts/NoteTypes'
 
 interface NotesListProps {
   notes: Note[]
@@ -16,13 +13,14 @@ const NotesList: React.FC<NotesListProps> = ({
   onNoteClick,
   onNewNoteClick,
 }) => {
+  console.log(notes)
   return (
     <div style={{ padding: '20px', color: 'white' }}>
       <h2>메모 리스트</h2>
       <ul style={{ listStyleType: 'none', padding: 0 }}>
         {notes.map((note) => (
           <li
-            key={note.id}
+            key={note.id !== null ? note.id : Math.random()} // null일 경우 대체 키 사용
             onClick={() => onNoteClick(note)}
             style={{
               cursor: 'pointer',
