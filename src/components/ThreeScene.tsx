@@ -1,11 +1,13 @@
-// ThreeScene.tsx
 import React, { useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Sphere from './Sphere'
 import Panel from './Panel'
 import { useAuth } from './../contexts/Auth'
 import { Note } from './../contexts/NoteTypes'
-import { saveNoteToFirestore } from './../utils/firestoreUtils'
+import {
+  saveNoteToFirestore,
+  deleteNoteFromFirestore,
+} from './../utils/firestoreUtils'
 import { fetchNotesFromFirestore } from '../utils/firebaseUtils'
 
 const ThreeScene: React.FC = () => {
@@ -16,7 +18,7 @@ const ThreeScene: React.FC = () => {
   useEffect(() => {
     const getNotes = async () => {
       try {
-        const fetchedNotes = await fetchNotesFromFirestore()
+        const fetchedNotes = await fetchNotesFromFirestore(user!.uid) // 사용자 ID를 사용하여 노트 가져오기
         setNotes(fetchedNotes)
       } catch (error) {
         console.error('Failed to fetch notes:', error)
@@ -30,12 +32,23 @@ const ThreeScene: React.FC = () => {
 
   const handleSave = async (updatedNote: Note) => {
     try {
-      await saveNoteToFirestore(updatedNote)
-      const updatedNotes = await fetchNotesFromFirestore()
+      await saveNoteToFirestore(updatedNote, user!.uid) // 사용자 ID를 사용하여 노트 저장
+      const updatedNotes = await fetchNotesFromFirestore(user!.uid)
       setNotes(updatedNotes)
       setSelectedNote(null)
     } catch (error) {
       console.error('Failed to save note:', error)
+    }
+  }
+
+  const handleNoteDelete = async (noteId: number) => {
+    try {
+      await deleteNoteFromFirestore(noteId, user!.uid) // 사용자 ID를 사용하여 노트 삭제
+      const updatedNotes = await fetchNotesFromFirestore(user!.uid)
+      setNotes(updatedNotes)
+      setSelectedNote(null)
+    } catch (error) {
+      console.error('Failed to delete note:', error)
     }
   }
 
@@ -64,6 +77,7 @@ const ThreeScene: React.FC = () => {
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}
           onSave={handleSave}
+          onNoteDelete={handleNoteDelete} // 삭제 핸들러 추가
         />
       </div>
     </div>
