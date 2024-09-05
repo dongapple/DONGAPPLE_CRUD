@@ -181,10 +181,10 @@ const ThreeScene = () => {
   const [selectedText, setSelectedText] = useState<string>('')
 
   return (
-    <div style={{ height: '100vh', backgroundColor: 'black' }}>
+    <div style={{ height: '100%', width: '100%', backgroundColor: 'black' }}>
       <Canvas>
-        <ambientLight />
-        <pointLight position={[10, 10, 10]} />
+        {/* <ambientLight />
+        <pointLight position={[10, 10, 10]} /> */}
         <Sphere setSelectedText={setSelectedText} />
       </Canvas>
       <h1 style={{ color: 'white', textAlign: 'center', marginTop: '-200px' }}>
