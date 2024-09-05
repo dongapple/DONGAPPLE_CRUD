@@ -1,12 +1,11 @@
-// ThreeScene.tsx
 import React, { useState } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Sphere from './Sphere'
 import Panel from './Panel'
-import NotesList from './NotesList'
-import NoteDetails from './NoteDetails'
+import { useAuth } from './../contexts/Auth'
 
 const ThreeScene = () => {
+  const { user } = useAuth() // AuthContext에서 user 가져오기
   const [notes, setNotes] = useState<any[]>([])
   const [selectedNote, setSelectedNote] = useState<any>(null)
 
@@ -16,24 +15,24 @@ const ThreeScene = () => {
         height: '100%',
         width: '100%',
         display: 'flex',
-        flexDirection: 'row', // 가로 방향으로 정렬
-        justifyContent: 'center', // 수평 가운데 정렬
-        // alignItems: 'center', // 수직 가운데 정렬
+        flexDirection: 'row',
+        justifyContent: 'center',
         backgroundColor: 'black',
       }}
     >
       <div style={{ flex: 1 }}>
-        <Canvas style={{ width: '100%', height: '100%' }}>
-          <Sphere />
-        </Canvas>
+        {user && (
+          <Canvas style={{ width: '100%', height: '100%' }}>
+            <Sphere notes={notes} />
+          </Canvas>
+        )}
       </div>
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column' }}>
-        <Panel setNotes={setNotes} />
-        {/* {selectedNote ? (
-          <NoteDetails note={selectedNote} />
-        ) : (
-          <NotesList notes={notes} onNoteClick={setSelectedNote} />
-        )} */}
+        <Panel
+          setNotes={setNotes}
+          selectedNote={selectedNote}
+          setSelectedNote={setSelectedNote}
+        />
       </div>
     </div>
   )
