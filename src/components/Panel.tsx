@@ -1,19 +1,23 @@
 import React from 'react'
 import NotesList from './NotesList'
 import NoteDetails from './NoteDetails'
+import Login from './Login'
 import { useAuth } from './../contexts/Auth'
-import Login from './Login' // 로그인 폼 컴포넌트를 불러오기
 
-const Panel = ({
-  setNotes,
-  selectedNote,
-  setSelectedNote,
-}: {
+interface PanelProps {
   setNotes: (notes: any[]) => void
   selectedNote: any
   setSelectedNote: (note: any) => void
+  onSave: (updatedNote: any) => void
+}
+
+const Panel: React.FC<PanelProps> = ({
+  setNotes,
+  selectedNote,
+  setSelectedNote,
+  onSave,
 }) => {
-  const { user, signOut } = useAuth() // 로그인 상태와 로그아웃 함수 가져오기
+  const { user, signOut } = useAuth()
 
   const handleLogout = async () => {
     try {
@@ -29,17 +33,15 @@ const Panel = ({
       {user ? (
         <>
           <h2>메모 패널</h2>
-          {/* 로그아웃 버튼 */}
           <button onClick={handleLogout} style={{ marginBottom: '20px' }}>
             로그아웃
           </button>
 
-          {/* 선택된 노트가 있는지 여부에 따라 다른 컴포넌트 렌더링 */}
           {selectedNote ? (
-            <NoteDetails note={selectedNote} />
+            <NoteDetails note={selectedNote} onSave={onSave} />
           ) : (
             <NotesList
-              notes={[]}
+              notes={[]} // 노트 목록을 상위 컴포넌트에서 전달 받아야 합니다.
               onNoteClick={setSelectedNote}
               onNewNoteClick={() =>
                 setSelectedNote({ id: null, title: '', content: '' })
@@ -48,7 +50,6 @@ const Panel = ({
           )}
         </>
       ) : (
-        // 로그인되지 않은 경우 로그인 폼을 렌더링
         <Login setNotes={setNotes} />
       )}
     </div>
