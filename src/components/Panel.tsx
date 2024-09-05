@@ -12,6 +12,7 @@ interface PanelProps {
   selectedNote: Note | null
   setSelectedNote: (note: Note | null) => void
   onSave: (updatedNote: Note) => void
+  onNoteDelete: (noteId: number) => Promise<void> // onNoteDelete 핸들러 추가
 }
 
 const Panel: React.FC<PanelProps> = ({
@@ -20,6 +21,7 @@ const Panel: React.FC<PanelProps> = ({
   selectedNote,
   setSelectedNote,
   onSave,
+  onNoteDelete, // onNoteDelete 핸들러 추가
 }) => {
   const { user, signOut } = useAuth()
 
@@ -50,6 +52,7 @@ const Panel: React.FC<PanelProps> = ({
               onNewNoteClick={() =>
                 setSelectedNote({ id: null, title: '', content: '' })
               }
+              onNoteDelete={onNoteDelete} // 삭제 핸들러 전달
             />
           )}
         </>
