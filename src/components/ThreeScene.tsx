@@ -1,14 +1,15 @@
+// ThreeScene.tsx
 import React, { useState, useEffect } from 'react'
 import { Canvas } from '@react-three/fiber'
 import Sphere from './Sphere'
 import Panel from './Panel'
 import { useAuth } from './../contexts/Auth'
 import { Note } from './../contexts/NoteTypes'
+import { saveNoteToFirestore } from './../utils/firestoreUtils'
 import {
-  saveNoteToFirestore,
   deleteNoteFromFirestore,
-} from './../utils/firestoreUtils'
-import { fetchNotesFromFirestore } from '../utils/firebaseUtils'
+  fetchNotesFromFirestore,
+} from '../utils/firebaseUtils'
 
 const ThreeScene: React.FC = () => {
   const { user } = useAuth()
@@ -18,7 +19,7 @@ const ThreeScene: React.FC = () => {
   useEffect(() => {
     const getNotes = async () => {
       try {
-        const fetchedNotes = await fetchNotesFromFirestore(user!.uid) // 사용자 ID를 사용하여 노트 가져오기
+        const fetchedNotes = await fetchNotesFromFirestore(user!.uid)
         setNotes(fetchedNotes)
       } catch (error) {
         console.error('Failed to fetch notes:', error)
@@ -28,11 +29,11 @@ const ThreeScene: React.FC = () => {
     if (user) {
       getNotes()
     }
-  }, [user]) // 사용자 로그인 상태가 변경될 때마다 노트 데이터를 가져옴
+  }, [user])
 
   const handleSave = async (updatedNote: Note) => {
     try {
-      await saveNoteToFirestore(updatedNote, user!.uid) // 사용자 ID를 사용하여 노트 저장
+      await saveNoteToFirestore(updatedNote, user!.uid)
       const updatedNotes = await fetchNotesFromFirestore(user!.uid)
       setNotes(updatedNotes)
       setSelectedNote(null)
@@ -41,14 +42,17 @@ const ThreeScene: React.FC = () => {
     }
   }
 
-  const handleNoteDelete = async (noteId: number) => {
+  const handleNoteDelete = async (noteId: string) => {
     try {
-      await deleteNoteFromFirestore(noteId, user!.uid) // 사용자 ID를 사용하여 노트 삭제
-      const updatedNotes = await fetchNotesFromFirestore(user!.uid)
+      if (!user || !user.uid) {
+        throw new Error('User is not authenticated')
+      }
+      await deleteNoteFromFirestore(noteId, user.uid)
+      const updatedNotes = await fetchNotesFromFirestore(user.uid)
       setNotes(updatedNotes)
       setSelectedNote(null)
     } catch (error) {
-      console.error('Failed to delete note:', error)
+      console.error('노트 삭제 실패:', error)
     }
   }
 
@@ -77,7 +81,7 @@ const ThreeScene: React.FC = () => {
           selectedNote={selectedNote}
           setSelectedNote={setSelectedNote}
           onSave={handleSave}
-          onNoteDelete={handleNoteDelete} // 삭제 핸들러 추가
+          onNoteDelete={handleNoteDelete}
         />
       </div>
     </div>

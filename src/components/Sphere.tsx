@@ -116,7 +116,7 @@ const Sphere = ({
     <mesh ref={meshRef} {...bind()}>
       <sphereGeometry args={[2, 32, 32]} />
       <meshStandardMaterial
-        color="lightgray"
+        color="red"
         transparent={true}
         opacity={0}
         side={THREE.DoubleSide}
